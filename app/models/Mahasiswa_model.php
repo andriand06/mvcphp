@@ -2,25 +2,49 @@
 
 class Mahasiswa_model 
 {
-    private $_pdo;
-    private $_host = 'localhost';
-    private $_dbname = 'ian';
-    private $_username = 'root';
-    private $_password = '';
+  private $table = 'mahasiswa';
+  private $db;
     public function __construct()
     {
-        try{
-            $this->_pdo = new PDO('mysql:host='.$this->_host.';dbname='.$this->_dbname,$this->_username,$this->_password);
-            $this->_pdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
-        }
-        catch (PDOException $e){
-            die("Koneksi / Query Bermasalah =".$e->getMessage()."(".$e->getCode().")");
-        }
+        $this->db = NEW DB();
     }
-    public function getAllMahasiswa() {
-        $query = "SELECT * FROM mahasiswa";
-       $stmt = $this->_pdo->prepare($query);
-       $stmt->execute();
-       return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    public function getAllMahasiswa()
+    {
+        $this->db->query('SELECT * FROM'.$this->table);
+        return $this->db->resultset();
     }
+    public function getMahasiswabyId($id)
+    {
+        $this->db->query('SELECT * FROM'.$this->table.'WHERE id=:id');
+        $this->db->bind('id',$id);
+        return $this->db->single();
+    }
+    public function insertMahasiswa($nim,$email)
+    {
+        $this->db->query('INSERT INTO'.$this->table.'(nim,email) VALUES (:nim,:email)');
+        $this->db->bind('nim',$nim);
+        $this->db->bind('email',$email);
+        $this->db->execute();
+    }
+
+    public function updateMahasiswa($nim,$email)
+    {
+        $this->db->query('UPDATE'.$this->table.'SET email=:email WHERE nim=:nim');
+        $this->db->bind(nim,$nim);
+        $this->db->bind(email,$email);
+        $this->db->execute();
+    }
+    public function deleteMahasiswa($id)
+    {
+        $this->db->query('DELETE FROM'.$this->table.'WHERE id=:id');
+        $this->db->bind(id,$id);
+        $this->db->execute();
+    }
+ 
+
+
 }
+
+  
+    
+   
